@@ -76,13 +76,11 @@ CREATE PROCEDURE sp_EndParking
 AS
 BEGIN
 	DECLARE @ParkingAreaID int
-	SET @ParkingAreaID = 'SELECT distinct ParkingAreaID FROM CarParking WHERE CID = @CID AND StartTime = @StartTime'
-	EXEC(@ParkingAreaID)
+	SET @ParkingAreaID = (SELECT TOP 1 CarParking.ParkingAreaID FROM CarParking WHERE CID = @CID AND StartTime = @StartTime)
 	DECLARE @RealCost int
-	SET @RealCost = 'DATEDIFF(HOUR, @StartTime, @EndTime) * (SELECT distinct priceperhour FROM ParkingArea WHERE AID = @ParkingAreaID'
-	EXEC(@RealCost)
+	SET @RealCost = (DATEDIFF(HOUR, @StartTime, @EndTime) * (SELECT TOP 1 priceperhour FROM ParkingArea WHERE AID = @ParkingAreaID))
 	DECLARE @MaxPrice int
-	SET @MaxPrice = 'SELECT maxpriceperday FROM ParkingArea WHERE AID = @ParkingAreaID'
+	SET @MaxPrice = (SELECT maxpriceperday FROM ParkingArea WHERE AID = @ParkingAreaID)
 	UPDATE CarParking
 	SET EndTime = @EndTime,
 		Cost = (SELECT Case When @RealCost < @MaxPrice
