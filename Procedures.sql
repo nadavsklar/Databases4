@@ -31,8 +31,7 @@ CREATE PROCEDURE sp_AddMunicipalEmployeeOfficial
 @DepartmentId int
 AS
 BEGIN
-	INSERT INTO Employee
-	VALUES (@EID, @LastName, @FirstName, @BirthDate, @StreetName, @Number, @door, @City)
+	EXECUTE sp_AddMunicipalEmployee @EID, @LastName, @FirstName, @BirthDate, @StreetName, @Number, @door, @City
 	INSERT INTO OfficialEmployee
 	VALUES (@EID, @StartDate, @Degree, @DepartmentId)
 END
@@ -51,8 +50,7 @@ CREATE PROCEDURE sp_AddMunicipalEmployeeConstructor
 @SalaryPerDay int
 AS
 BEGIN
-	INSERT INTO Employee
-	VALUES (@EID, @LastName, @FirstName, @BirthDate, @StreetName, @Number, @door, @City)
+	EXECUTE sp_AddMunicipalEmployee @EID, @LastName, @FirstName, @BirthDate, @StreetName, @Number, @door, @City
 	INSERT INTO ConstructorEmployee
 	VALUES (@EID, @CompanyName, @SalaryPerDay)
 END
@@ -75,16 +73,8 @@ CREATE PROCEDURE sp_EndParking
 @EndTime datetime
 AS
 BEGIN
-	DECLARE @ParkingAreaID int
-	SET @ParkingAreaID = (SELECT TOP 1 CarParking.ParkingAreaID FROM CarParking WHERE CID = @CID AND StartTime = @StartTime)
-	DECLARE @RealCost int
-	SET @RealCost = (DATEDIFF(HOUR, @StartTime, @EndTime) * (SELECT TOP 1 priceperhour FROM ParkingArea WHERE AID = @ParkingAreaID))
-	DECLARE @MaxPrice int
-	SET @MaxPrice = (SELECT maxpriceperday FROM ParkingArea WHERE AID = @ParkingAreaID)
 	UPDATE CarParking
-	SET EndTime = @EndTime,
-		Cost = (SELECT Case When @RealCost < @MaxPrice
-							Then @RealCost Else @MaxPrice END)
+	SET EndTime = @EndTime
 	WHERE CID = @CID AND StartTime = @StartTime
 END
 GO

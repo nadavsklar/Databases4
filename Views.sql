@@ -3,7 +3,7 @@ GO
 
 CREATE VIEW ConstructionEmployeeOverFifty
 AS
-	SELECT Employee.*, ConstructorEmployee.CompanyName, ConstructorEmployee.SalaryPerDay
+	SELECT ConstructorEmployee.*
 	FROM Employee, ConstructorEmployee
 	WHERE Employee.EID = ConstructorEmployee.EID AND DATEDIFF(YEAR, Employee.BirthDate, GETDATE()) >= 50
 GO
@@ -15,11 +15,11 @@ AS
 	GROUP BY [NAME], [NID]
 GO
 
-CREATE VIEW MaxParking
-AS
-	SELECT CarParking.[ParkingAreaID], CarParking.[CID], COUNT(*) AS NumberOfParkings
-	FROM CarParking JOIN ParkingArea ON CarParking.[ParkingAreaID] = ParkingArea.[AID]
-	GROUP BY [ParkingAreaID],[CID]
-	HAVING COUNT(CID) >= ALL (SELECT COUNT(CID) FROM CarParking WHERE CarParking.[ParkingAreaID] = ParkingAreaID AND CarParking.[CID] = CID GROUP BY CID)
-	ORDER BY NumberOfParkings DESC  
-GO
+--ALTER VIEW MaxParking
+--AS
+	--SELECT CarParking.[ParkingAreaID], CarParking.[CID], COUNT(*) AS NumberOfParkings
+	--FROM CarParking JOIN ParkingArea ON CarParking.[ParkingAreaID] = ParkingArea.[AID]
+	--GROUP BY [ParkingAreaID],[CID]
+	--HAVING COUNT([CID]) >= ALL (SELECT COUNT(CID) FROM CarParking WHERE CarParking.[ParkingAreaID] = ParkingAreaID GROUP BY CID)
+	--ORDER BY NumberOfParkings DESC  
+--GO
