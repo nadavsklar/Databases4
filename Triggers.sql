@@ -1,4 +1,4 @@
-USE DB2019_Ass2
+USE DB2019_Ass4
 GO
 
 CREATE TRIGGER DeleteProject ON Project

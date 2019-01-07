@@ -7,7 +7,7 @@ SELECT ParkingArea.AID, ParkingArea.Name, CarID FROM ParkingArea LEFT JOIN (
 		SELECT cp1.ParkingAreaID, cp1.CID AS CarID 
 		FROM CarParking AS cp1 
 		GROUP BY cp1.ParkingAreaID, cp1.CID
-		HAVING COUNT(cp1.CID)>=All(
+		HAVING COUNT(cp1.CID)>=All
 
 			SELECT COUNT(CID) FROM CarParking AS cp2
 			WHERE cp1.ParkingAreaID=cp2.ParkingAreaID 

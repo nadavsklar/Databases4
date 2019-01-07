@@ -123,12 +123,12 @@ public class ScriptRunner {
                 }
             }
             String command = script.toString();
-            println(command);
+            //println(command);
             executeStatement(command);
             commitConnection();
         } catch (Exception e) {
             String message = "Error executing: " + script + ".  Cause: " + e;
-            printlnError(message);
+            //printlnError(message);
         }
     }
 
@@ -145,7 +145,7 @@ public class ScriptRunner {
             checkForMissingLineTerminator(command);
         } catch (Exception e) {
             String message = "Error executing: " + command + ".  Cause: " + e;
-            printlnError(message);
+            //printlnError(message);
         }
     }
 
@@ -198,11 +198,11 @@ public class ScriptRunner {
                 delimiter = cleanedString.substring(11,12);
                 return command;
             }
-            println(trimmedLine);
+            //println(trimmedLine);
         } else if (commandReadyToExecute(trimmedLine)) {
             command.append(line.substring(0, line.lastIndexOf(delimiter)));
             command.append(LINE_SEPARATOR);
-            println(command);
+            //println(command);
             executeStatement(command.toString());
             command.setLength(0);
         } else if (trimmedLine.length() > 0) {
@@ -244,7 +244,7 @@ public class ScriptRunner {
                 hasResults = statement.execute(sql);
             } catch (SQLException e) {
                 String message = "Error executing: " + command + ".  Cause: " + e;
-                printlnError(message);
+                //printlnError(message);
             }
         }
         printResults(statement, hasResults);

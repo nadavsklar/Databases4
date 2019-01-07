@@ -1,6 +1,6 @@
-Create Database DB2019_Ass16;
+Create Database DB2019_Ass4;
 GO
-USE [DB2019_Ass16]
+USE [DB2019_Ass4]
 GO
 CREATE TABLE [Employee](
 	[EID] [int]  Primary key,
