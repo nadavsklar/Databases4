@@ -12,7 +12,6 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 
-
 public class Assignment4 {
 
     private final String databaseName = "[DB2019_Ass2]";
@@ -67,7 +66,6 @@ public class Assignment4 {
     }
 
 
-
     public static void main(String[] args) {
 
         File file = new File(".");
@@ -75,18 +73,18 @@ public class Assignment4 {
         String line = "";
         String cvsSplitBy = ",";
         Assignment4 ass = new Assignment4();
-
+        ass.initDB("src/initDB.sql");
         ass.updateAllProjectsBudget(100);
-        System.out.println(ass.getEmployeeTotalSalary());
+//        System.out.println(ass.getEmployeeTotalSalary());
 //        System.out.println(ass.getTotalProjectBudget());
 //        System.out.println(ass.calculateIncomeFromParking(2018));
 //        ass.AddEmployee(43242,"Levi","Jonathan",new Date(1),
 //                "ADMONIT",8,6,"RAANANA");
-        System.out.println(ass.getMostProfitableParkingAreas());
-        System.out.println(ass.getNumberOfParkingByArea());
-        System.out.println(ass.getNumberOfDistinctCarsByArea());
+//        System.out.println(ass.getMostProfitableParkingAreas());
+//        System.out.println(ass.getNumberOfParkingByArea());
+//        System.out.println(ass.getNumberOfDistinctCarsByArea());
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+          try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
 
             while ((line = br.readLine()) != null) {
 
@@ -102,7 +100,6 @@ public class Assignment4 {
 
         }
     }
-
 
 
     private void loadNeighborhoodsFromCsv(String csvPath) {
@@ -139,7 +136,7 @@ public class Assignment4 {
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
         databaseManager.executeQueryVoid("UPDATE ConstructorEmployee\n" +
-                "SET SalaryPerDay = SalaryPerDay * " + (1 + (percentage/100)) + "\n" +
+                "SET SalaryPerDay = SalaryPerDay * " + (1 + (percentage / 100)) + "\n" +
                 "WHERE EID IN (SELECT ConstructorEmployee.EID\n" +
                 "\tFROM Employee, ConstructorEmployee\n" +
                 "\tWHERE Employee.EID = ConstructorEmployee.EID AND DATEDIFF(YEAR, Employee.BirthDate, GETDATE()) >= 50)");
@@ -184,6 +181,7 @@ public class Assignment4 {
         databaseManager.closeConnection();
         return result;
     }
+
     private void dropDB() {
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
@@ -196,8 +194,24 @@ public class Assignment4 {
     }
 
     private void initDB(String csvPath) {
-        //ToDO - this
+        DatabaseManager databaseManager = new DatabaseManagerMSSQLServer("master");
+        databaseManager.startConnection();
+        Connection conn=databaseManager.conn;//some method to get a Connection
+
+        ScriptRunner runner = new ScriptRunner(conn);
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream(csvPath));
+            runner.runScript(reader);
+            reader.close();
+            databaseManager.closeConnection();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
     private int calculateIncomeFromParking(int year) {
         int result = 0;
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
@@ -222,7 +236,7 @@ public class Assignment4 {
     }
 
     private ArrayList<Pair<Integer, Integer>> getMostProfitableParkingAreas() {
-        ArrayList<Pair<Integer,Integer>> mostProfitable = new ArrayList<>();
+        ArrayList<Pair<Integer, Integer>> mostProfitable = new ArrayList<>();
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
 
@@ -233,9 +247,9 @@ public class Assignment4 {
 
         ResultSet resultSet = databaseManager.executeQuerySelect(query);
         try {
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 mostProfitable.add(
-                        new Pair(resultSet.getInt(1),resultSet.getInt(2)));
+                        new Pair(resultSet.getInt(1), resultSet.getInt(2)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -247,7 +261,7 @@ public class Assignment4 {
 
     private ArrayList<Pair<Integer, Integer>> getNumberOfParkingByArea() {
 
-        ArrayList<Pair<Integer,Integer>> numOfParkings = new ArrayList<>();
+        ArrayList<Pair<Integer, Integer>> numOfParkings = new ArrayList<>();
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
 
@@ -257,9 +271,9 @@ public class Assignment4 {
 
         ResultSet resultSet = databaseManager.executeQuerySelect(query);
         try {
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 numOfParkings.add(
-                        new Pair(resultSet.getInt(1),resultSet.getInt(2)));
+                        new Pair(resultSet.getInt(1), resultSet.getInt(2)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -271,7 +285,7 @@ public class Assignment4 {
 
 
     private ArrayList<Pair<Integer, Integer>> getNumberOfDistinctCarsByArea() {
-        ArrayList<Pair<Integer,Integer>> numOfCars = new ArrayList<>();
+        ArrayList<Pair<Integer, Integer>> numOfCars = new ArrayList<>();
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
 
@@ -281,9 +295,9 @@ public class Assignment4 {
 
         ResultSet resultSet = databaseManager.executeQuerySelect(query);
         try {
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 numOfCars.add(
-                        new Pair(resultSet.getInt(1),resultSet.getInt(2)));
+                        new Pair(resultSet.getInt(1), resultSet.getInt(2)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -297,10 +311,10 @@ public class Assignment4 {
         DatabaseManager databaseManager = new DatabaseManagerMSSQLServer(databaseName);
         databaseManager.startConnection();
         String query =
-        "INSERT INTO [Employee]\n" +
-                "\tVALUES\n" +
-                "\t(" + EID + ",'" + LastName + "','" + FirstName +"','" + BirthDate +
-                "','" + StreetName + "'," +Number + "," + door + ",'" + City + "')";
+                "INSERT INTO [Employee]\n" +
+                        "\tVALUES\n" +
+                        "\t(" + EID + ",'" + LastName + "','" + FirstName + "','" + BirthDate +
+                        "','" + StreetName + "'," + Number + "," + door + ",'" + City + "')";
 
         databaseManager.executeQueryVoid(query);
         databaseManager.closeConnection();
